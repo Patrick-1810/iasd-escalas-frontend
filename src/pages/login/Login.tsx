@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { ArrowRight, Church, User, ShieldCheck } from "lucide-react";
-import heroImg from "../../assets/hero.png";
+import { Input } from "../../components/Input/Input";
+import { QuickAccessCard } from "../../components/QuickAccessCard/QuickAccessCard";
 import "./Login.scss";
 
 export default function Login() {
@@ -10,14 +11,15 @@ export default function Login() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     console.log({ email, password });
-    // Aqui conectaremos com nosso Axios dps!
   };
 
   return (
     <div className="login-container">
-      {/* LADO ESQUERDO: BANNER */}
-      <div className="login-banner" style={{ backgroundImage: `url(${heroImg})` }}>
-        <div className="banner-header">
+      {/* LADO ESQUERDO: BANNER (ASIDE) */}
+      <aside 
+        className="login-banner" 
+      >
+        <header className="banner-header">
           <div className="logo-box">
             <Church size={24} className="text-white" />
           </div>
@@ -25,17 +27,17 @@ export default function Login() {
             <h2>IASD Escalas</h2>
             <span>Gestão Eclesiástica</span>
           </div>
-        </div>
+        </header>
 
-        <div className="banner-body">
+        <article className="banner-body">
           <h1>Servir com ordem,<br />adorar com amor.</h1>
           <p>
             Plataforma de gestão de escalas para líderes, anciãos e membros da
-            Igreja Adventista do Sétimo Dia. Organize os cultos, acompanhe os
+            Igreja Adventistado Sétimo Dia. Organize os cultos, acompanhe os
             departamentos e edifique a comunidade.
           </p>
 
-          <div className="stats-grid">
+          <section className="stats-grid" aria-label="Estatísticas da plataforma">
             <div className="stat-item">
               <strong>6</strong>
               <span>Departamentos</span>
@@ -48,45 +50,41 @@ export default function Login() {
               <strong>100%</strong>
               <span>Responsivo</span>
             </div>
-          </div>
-        </div>
+          </section>
+        </article>
 
-        <div className="banner-footer">
-          <p>"Tudo, porém, seja feito com decência e ordem." — 1 Cor 14:40</p>
-        </div>
-      </div>
+        <footer className="banner-footer">
+          <cite>"Tudo, porém, seja feito com decência e ordem." — 1 Cor 14:40</cite>
+        </footer>
+      </aside>
 
       {/* LADO DIREITO: FORMULÁRIO */}
-      <div className="login-form-side">
+      <main className="login-form-side">
         <div className="form-wrapper">
-          <span className="badge">• Acesso à Plataforma</span>
+          <span className="badge" role="status">• Acesso à Plataforma</span>
           <h3>Entre na sua conta</h3>
           <p className="subtitle">Use suas credenciais ou entre com um dos perfis de demonstração.</p>
 
           <form onSubmit={handleSubmit}>
-            <div className="input-group">
-              <label htmlFor="email">E-mail</label>
-              <input
-                id="email"
-                type="email"
-                placeholder="voce@igreja.org"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-              />
-            </div>
+            <Input
+              id="email"
+              label="E-mail"
+              type="email"
+              placeholder="seu@email.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
 
-            <div className="input-group">
-              <label htmlFor="password">Senha</label>
-              <input
-                id="password"
-                type="password"
-                placeholder="••••••••"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
-            </div>
+            <Input
+              id="password"
+              label="Senha"
+              type="password"
+              placeholder="••••••••"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
 
             <button type="submit" className="btn-submit">
               Entrar <ArrowRight size={18} />
@@ -97,33 +95,27 @@ export default function Login() {
             <span>OU ACESSO RÁPIDO</span>
           </div>
 
-          <div className="quick-access">
-            <button className="qa-card member">
-              <div className="icon-wrapper">
-                <User size={18} />
-              </div>
-              <div className="text">
-                <span>Entrar como</span>
-                <strong>Membro</strong>
-              </div>
-            </button>
+          <section className="quick-access" aria-label="Acesso rápido demonstrativo">
+            <QuickAccessCard
+              variant="member"
+              title="Membro"
+              icon={<User size={18} />}
+              onClick={() => console.log("Acesso rápido: Membro")}
+            />
 
-            <button className="qa-card leader">
-              <div className="icon-wrapper">
-                <ShieldCheck size={18} />
-              </div>
-              <div className="text">
-                <span>Entrar como</span>
-                <strong>Líder</strong>
-              </div>
-            </button>
-          </div>
+            <QuickAccessCard
+              variant="leader"
+              title="Líder"
+              icon={<ShieldCheck size={18} />}
+              onClick={() => console.log("Acesso rápido: Líder")}
+            />
+          </section>
 
-          <p className="terms">
-            Ao entrar você concorda com os termos de uso pastorais.
-          </p>
+          <footer className="terms">
+            <p>Ao entrar você concorda com os termos de uso e privacidade.</p>
+          </footer>
         </div>
-      </div>
+      </main>
     </div>
   );
 }
