@@ -1,0 +1,113 @@
+.highlight-card {
+  flex: 1;
+  min-width: 300px;
+  border-radius: 16px;
+  padding: 1.75rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 1.5rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px -1px rgba(0, 0, 0, 0.01);
+  transition: transform 0.2s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+  }
+
+  .card-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    .card-badge {
+      font-size: 0.65rem;
+      font-weight: 700;
+      padding: 0.35rem 0.65rem;
+      border-radius: 20px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .icon-wrapper {
+      padding: 0.5rem;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  }
+
+  .card-content {
+    h3 {
+      font-size: 1.5rem;
+      font-weight: 800;
+      margin-bottom: 0.35rem;
+    }
+    .subtitle {
+      font-size: 0.875rem;
+      margin-bottom: 1rem;
+    }
+    .phone-line {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.85rem;
+      font-weight: 500;
+    }
+  }
+
+  
+  &.primary {
+    background: linear-gradient(135deg, #1e40af, #0f172a);
+    color: #ffffff;
+
+    .card-badge {
+      background-color: rgba(255, 255, 255, 0.15);
+      color: #ffffff;
+    }
+    .icon-wrapper {
+      background-color: rgba(255, 255, 255, 0.1);
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+    }
+    h3 { color: #ffffff; }
+    .subtitle { color: rgba(255, 255, 255, 0.7); }
+    .phone-line { color: rgba(255, 255, 255, 0.8); }
+  }
+
+ 
+  &.surface {
+    background-color: var(--bg-primary);
+    border: 1px solid var(--border-color);
+
+    .card-badge {
+      background-color: #e8efff;
+      color: var(--brand-primary);
+    }
+    .icon-wrapper {
+      background-color: #f1f5f9;
+      color: var(--brand-primary);
+    }
+    h3 { color: var(--text-main); }
+    .subtitle { color: var(--text-muted); }
+    .phone-line { color: var(--text-main); }
+
+    .card-footer {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      border-top: 1px solid var(--border-color);
+      padding-top: 1rem;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      font-weight: 500;
+
+      .status-dot {
+        width: 6px;
+        height: 6px;
+        background-color: #10b981;
+        border-radius: 50%;
+      }
+    }
+  }
+}
