@@ -1,0 +1,123 @@
+.main-header {
+  width: 100%;
+  background-color: var(--bg-primary);
+  border-bottom: 1px solid var(--border-color);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+
+  .header-wrapper {
+    height: 72px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .brand-area {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+
+    .logo-box {
+      background-color: var(--brand-primary);
+      color: #ffffff;
+      padding: 0.5rem;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .brand-text {
+      h2 {
+        font-size: 1rem;
+        font-weight: 700;
+        margin: 0;
+      }
+      span {
+        font-size: 0.7rem;
+        color: var(--text-muted);
+        font-weight: 600;
+        letter-spacing: 0.05em;
+      }
+    }
+  }
+
+  .nav-menu {
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background-color: #e8efff;
+      color: var(--brand-primary);
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      font-size: 0.875rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+  }
+
+  .user-profile {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+
+    .role-badge {
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+      background-color: #f1f5f9;
+      color: var(--text-muted);
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 0.35rem 0.65rem;
+      border-radius: 20px;
+    }
+
+    .profile-dropdown {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.35rem 0.75rem;
+      border: 1px solid var(--border-color);
+      border-radius: 24px;
+      cursor: pointer;
+
+      .avatar {
+        width: 24px;
+        height: 24px;
+        background-color: var(--brand-primary);
+        color: #ffffff;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.75rem;
+        font-weight: 700;
+      }
+
+      .username {
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: var(--text-main);
+      }
+    }
+  }
+
+  @media (max-width: 768px) {
+    .user-profile .role-badge {
+      display: none;
+    }
+  }
+
+  @media (max-width: 580px) {
+    .brand-text {
+      display: none;
+    }
+    .nav-menu {
+      display: none;
+    }
+  }
+}
