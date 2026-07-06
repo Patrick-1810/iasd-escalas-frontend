@@ -1,10 +1,15 @@
-import React from "react";
+import React, { useState } from "react";
 import { Header } from "../../components/Header/Header";
 import { HighlightCard } from "../../components/HighlightCard/HighlightCard";
 import { ScheduleColumn } from "../../components/ScheduleColumn/ScheduleColumn";
 import "./Dashboard.scss";
 
 export const Dashboard: React.FC = () => {
+  const [role, setRole] = useState<"membro" | "admin">("membro");
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const isAdmin = role === "admin";
+
   const mockColumns = [
     {
       title: "Sonoplastia",
@@ -74,17 +79,39 @@ export const Dashboard: React.FC = () => {
 
   return (
     <div className="dashboard-page">
-      <Header />
+      <Header currentRole={role} onRoleChange={(newRole) => setRole(newRole)} />
       
       <main className="container-center dashboard-content">
-        {/* Boas-Vindas */}
-        <section className="welcome-section">
-          <span className="section-badge">Escalas da Semana</span>
-          <h1>Olá, <span className="highlight-name">João</span>.</h1>
-          <p>Confira as escalas dos próximos cultos e encontre onde você foi escalado.</p>
+        
+        {/* Boas-Vindas*/}
+        <section className="welcome-section" style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", flexWrap: "wrap", gap: "1rem" }}>
+          <div>
+            <span className="section-badge">Escalas da Semana</span>
+            {isAdmin ? (
+              <>
+                <h1>Olá, <span className="highlight-name">Pr. Daniel Ancião</span>.</h1>
+                <p>Gerencie os departamentos, crie novas escalas e mantenha a ordem nos cultos.</p>
+              </>
+            ) : (
+              <>
+                <h1>Olá, <span className="highlight-name">João</span>.</h1>
+                <p>Confira as escalas dos próximos cultos e encontre onde você foi escalado.</p>
+              </>
+            )}
+          </div>
+
+          {isAdmin && (
+            <button 
+              onClick={() => setIsModalOpen(true)}
+              style={{ backgroundColor: "var(--brand-primary)", color: "#ffffff", border: "none", padding: "0.65rem 1.25rem", borderRadius: "8px", fontWeight: "700", fontSize: "0.875rem", display: "flex", alignItems: "center", gap: "0.5rem", cursor: "pointer" }}
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+              Nova Escala
+            </button>
+          )}
         </section>
 
-        {/* Cards de Destaque Superior */}
+        {/* Cards Superior */}
         <section className="highlights-grid">
           <HighlightCard 
             type="primary"
@@ -134,7 +161,7 @@ export const Dashboard: React.FC = () => {
 
         <span className="results-counter">16 escala(s) encontrada(s)</span>
 
-        {/* Grid de Organização das colunas */}
+        {/* Grid das colunas */}
         <section className="columns-grid">
           {mockColumns.map((col, index) => (
             <ScheduleColumn 
@@ -144,10 +171,63 @@ export const Dashboard: React.FC = () => {
               icon={col.icon}
               iconBgColor={col.iconBgColor}
               duties={col.duties}
+              isAdmin={isAdmin} 
+              onAddClick={() => setIsModalOpen(true)}
             />
           ))}
         </section>
       </main>
+
+      {/* Modal para demonstração */}
+      {isModalOpen && (
+        <div className="modal-backdrop" style={{ position: "fixed", top: 0, left: 0, width: "100vw", height: "100vh", backgroundColor: "rgba(15, 23, 42, 0.4)", backdropFilter: "blur(4px)", display: "flex", justifyContent: "center", alignItems: "center", zIndex: 1000 }} onClick={() => setIsModalOpen(false)}>
+          <div className="modal-container" style={{ backgroundColor: "#ffffff", borderRadius: "16px", padding: "2rem", width: "100%", maxWidth: "500px", boxShadow: "0 20px 25px -5px rgba(0,0,0,0.1)" }} onClick={(e) => e.stopPropagation()}>
+            <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "1.5rem" }}>
+              <h2 style={{ fontSize: "1.5rem", fontWeight: "800" }}>Nova Escala</h2>
+              <button onClick={() => setIsModalOpen(false)} style={{ background: "none", border: "none", fontSize: "1.25rem", cursor: "pointer" }}>&times;</button>
+            </div>
+            
+            {/* O formulário do modal */}
+            <form style={{ display: "flex", flexDirection: "column", gap: "1rem" }} onSubmit={(e) => { e.preventDefault(); setIsModalOpen(false); }}>
+              <div style={{ display: "flex", gap: "1rem" }}>
+                <div style={{ flex: 1 }}>
+                  <label style={{ fontSize: "0.85rem", fontWeight: 700, display: "block", marginBottom: "0.4rem" }}>Data</label>
+                  <input type="date" style={{ width: "100%", padding: "0.55rem", borderRadius: "8px", border: "1px solid var(--border-color)" }} />
+                </div>
+                <div style={{ flex: 1 }}>
+                  <label style={{ fontSize: "0.85rem", fontWeight: 700, display: "block", marginBottom: "0.4rem" }}>Tipo de Culto</label>
+                  <select style={{ width: "100%", padding: "0.55rem", borderRadius: "8px", border: "1px solid var(--border-color)" }}>
+                    <option>Sábado — Culto Divino</option>
+                    <option>Domingo — Evangelismo</option>
+                    <option>Quarta — Oração</option>
+                  </select>
+                </div>
+              </div>
+              <div>
+                <label style={{ fontSize: "0.85rem", fontWeight: 700, display: "block", marginBottom: "0.4rem" }}>Departamento</label>
+                <select style={{ width: "100%", padding: "0.55rem", borderRadius: "8px", border: "1px solid var(--border-color)" }}>
+                  <option>Pregação</option>
+                  <option>Sonoplastia</option>
+                  <option>Louvor</option>
+                  <option>Recepção</option>
+                </select>
+              </div>
+              <div>
+                <label style={{ fontSize: "0.85rem", fontWeight: 700, display: "block", marginBottom: "0.4rem" }}>Membros Escalados</label>
+                <input type="text" placeholder="Nome do membro" style={{ width: "100%", padding: "0.55rem", borderRadius: "8px", border: "1px solid var(--border-color)" }} />
+              </div>
+              <div>
+                <label style={{ fontSize: "0.85rem", fontWeight: 700, display: "block", marginBottom: "0.4rem" }}>Observação (opcional)</label>
+                <textarea rows={3} placeholder="Ex: Tema da pregação, horário especial..." style={{ width: "100%", padding: "0.55rem", borderRadius: "8px", border: "1px solid var(--border-color)" }} />
+              </div>
+              <div style={{ display: "flex", justifyContent: "flex-end", gap: "0.75rem", marginTop: "1rem" }}>
+                <button type="button" onClick={() => setIsModalOpen(false)} style={{ padding: "0.55rem 1.25rem", borderRadius: "8px", border: "1px solid var(--border-color)", background: "none", fontWeight: 600, cursor: "pointer" }}>Cancelar</button>
+                <button type="submit" style={{ padding: "0.55rem 1.25rem", borderRadius: "8px", backgroundColor: "var(--brand-primary)", color: "#white", border: "none", fontWeight: 600, cursor: "pointer" }}>Criar escala</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
 
       <footer className="dashboard-footer">
         <p>IASD Escalas • Servindo com ordem e amor • v1.0</p>
