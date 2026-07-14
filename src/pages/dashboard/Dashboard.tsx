@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Header } from "../../components/Header/Header";
 import { HighlightCard } from "../../components/HighlightCard/HighlightCard";
 import { ScheduleColumn } from "../../components/ScheduleColumn/ScheduleColumn";
 import "./Dashboard.scss";
 
-export const Dashboard: React.FC = () => {
+export default function Dashboard () {
   const [role, setRole] = useState<"membro" | "admin">("membro");
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -234,4 +234,4 @@ export const Dashboard: React.FC = () => {
       </footer>
     </div>
   );
-};
+}

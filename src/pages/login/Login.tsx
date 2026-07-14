@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { ArrowRight, Church, User, ShieldCheck } from "lucide-react";
 import { Input } from "../../components/Input/Input";
 import { QuickAccessCard } from "../../components/QuickAccessCard/QuickAccessCard";
