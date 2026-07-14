@@ -52,12 +52,11 @@ export default function Dashboard() {
   const handleCreateEscala = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-
       const dateSelected = new Date(formData.data);
       dateSelected.setMinutes(dateSelected.getMinutes() + dateSelected.getTimezoneOffset());
 
       const payload = {
-        data: new Date(formData.data).toISOString(), 
+        data: dateSelected.toISOString(), 
         tipo_culto: formData.tipo_culto,
         departamento: formData.departamento,
         membros_escalados: formData.membros.split(",").map(m => m.trim()).filter(Boolean),
@@ -245,31 +244,31 @@ export default function Dashboard() {
 
       {/* Modal de Cadastro */}
       {isModalOpen && (
-        <div className="modal-backdrop" style={{ position: "fixed", top: 0, left: 0, width: "100vw", height: "100vh", backgroundColor: "rgba(15, 23, 42, 0.4)", backdropFilter: "blur(4px)", display: "flex", justifyContent: "center", alignItems: "center", zIndex: 1000 }} onClick={() => setIsModalOpen(false)}>
-          <div className="modal-container" style={{ backgroundColor: "#ffffff", borderRadius: "16px", padding: "2rem", width: "100%", maxWidth: "500px", boxShadow: "0 20px 25px -5px rgba(0,0,0,0.1)" }} onClick={(e) => e.stopPropagation()}>
-            <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "1.5rem" }}>
-              <h2 style={{ fontSize: "1.5rem", fontWeight: "800", color: "#1e293b" }}>Nova Escala</h2>
-              <button onClick={() => setIsModalOpen(false)} style={{ background: "none", border: "none", fontSize: "1.25rem", cursor: "pointer" }}>&times;</button>
+        <div className="modal-backdrop" onClick={() => setIsModalOpen(false)}>
+          <div className="modal-container" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h2>Nova Escala</h2>
+              <button className="close-btn" onClick={() => setIsModalOpen(false)}>&times;</button>
             </div>
             
-            <form style={{ display: "flex", flexDirection: "column", gap: "1rem" }} onSubmit={handleCreateEscala}>
-              <div style={{ display: "flex", gap: "1rem" }}>
-                <div style={{ flex: 1 }}>
-                  <label style={{ fontSize: "0.85rem", fontWeight: 700, display: "block", marginBottom: "0.4rem", color: "#475569" }}>Data</label>
+            <form className="modal-form" onSubmit={handleCreateEscala}>
+              <div className="form-row">
+                <div className="form-group">
+                  <label>Data</label>
                   <input 
                     type="date" 
                     required
                     value={formData.data}
                     onChange={(e) => setFormData({ ...formData, data: e.target.value })}
-                    style={{ width: "100%", padding: "0.55rem", borderRadius: "8px", border: "1px solid #cbd5e1" }} 
+                    className="modal-input"
                   />
                 </div>
-                <div style={{ flex: 1 }}>
-                  <label style={{ fontSize: "0.85rem", fontWeight: 700, display: "block", marginBottom: "0.4rem", color: "#475569" }}>Tipo de Culto</label>
+                <div className="form-group">
+                  <label>Tipo de Culto</label>
                   <select 
                     value={formData.tipo_culto}
                     onChange={(e) => setFormData({ ...formData, tipo_culto: e.target.value })}
-                    style={{ width: "100%", padding: "0.55rem", borderRadius: "8px", border: "1px solid #cbd5e1", background: "#fff" }}
+                    className="modal-input"
                   >
                     <option value="SABADO">Sábado</option>
                     <option value="DOMINGO">Domingo</option>
@@ -278,12 +277,12 @@ export default function Dashboard() {
                 </div>
               </div>
               
-              <div>
-                <label style={{ fontSize: "0.85rem", fontWeight: 700, display: "block", marginBottom: "0.4rem", color: "#475569" }}>Departamento</label>
+              <div className="form-group">
+                <label>Departamento</label>
                 <select 
                   value={formData.departamento}
                   onChange={(e) => setFormData({ ...formData, departamento: e.target.value })}
-                  style={{ width: "100%", padding: "0.55rem", borderRadius: "8px", border: "1px solid #cbd5e1", background: "#fff" }}
+                  className="modal-input"
                 >
                   <option value="PREGACAO">Pregação</option>
                   <option value="SONOPLASTIA">Sonoplastia</option>
@@ -294,32 +293,32 @@ export default function Dashboard() {
                 </select>
               </div>
 
-              <div>
-                <label style={{ fontSize: "0.85rem", fontWeight: 700, display: "block", marginBottom: "0.4rem", color: "#475569" }}>Membros Escalados (separe por vírgula)</label>
+              <div className="form-group">
+                <label>Membros Escalados (separe por vírgula)</label>
                 <input 
                   type="text" 
                   required
                   placeholder="Ex: João Silva, Maria Souza" 
                   value={formData.membros}
                   onChange={(e) => setFormData({ ...formData, membros: e.target.value })}
-                  style={{ width: "100%", padding: "0.55rem", borderRadius: "8px", border: "1px solid #cbd5e1" }} 
+                  className="modal-input"
                 />
               </div>
 
-              <div>
-                <label style={{ fontSize: "0.85rem", fontWeight: 700, display: "block", marginBottom: "0.4rem", color: "#475569" }}>Observação (opcional)</label>
+              <div className="form-group">
+                <label>Observação (opcional)</label>
                 <textarea 
                   rows={3} 
                   placeholder="Ex: Tema da pregação, horário especial..." 
                   value={formData.observacao}
                   onChange={(e) => setFormData({ ...formData, observacao: e.target.value })}
-                  style={{ width: "100%", padding: "0.55rem", borderRadius: "8px", border: "1px solid #cbd5e1" }} 
+                  className="modal-input"
                 />
               </div>
 
-              <div style={{ display: "flex", justifyContent: "flex-end", gap: "0.75rem", marginTop: "1rem" }}>
-                <button type="button" onClick={() => setIsModalOpen(false)} style={{ padding: "0.55rem 1.25rem", borderRadius: "8px", border: "1px solid #cbd5e1", background: "none", fontWeight: 600, cursor: "pointer" }}>Cancelar</button>
-                <button type="submit" style={{ padding: "0.55rem 1.25rem", borderRadius: "8px", backgroundColor: "var(--brand-primary)", color: "#ffffff", border: "none", fontWeight: 600, cursor: "pointer" }}>Criar escala</button>
+              <div className="form-actions">
+                <button type="button" className="btn-cancel" onClick={() => setIsModalOpen(false)}>Cancelar</button>
+                <button type="submit" className="btn-submit">Criar escala</button>
               </div>
             </form>
           </div>
