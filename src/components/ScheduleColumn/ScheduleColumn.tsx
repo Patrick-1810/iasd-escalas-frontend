@@ -2,6 +2,7 @@ import React from "react";
 import "./ScheduleColumn.scss";
 
 interface DutyItem {
+  id: string; 
   date: string;
   dayOfWeek: string;
   names: string[];
