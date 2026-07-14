@@ -2,15 +2,28 @@ import { useState } from "react";
 import { ArrowRight, Church, User, ShieldCheck } from "lucide-react";
 import { Input } from "../../components/Input/Input";
 import { QuickAccessCard } from "../../components/QuickAccessCard/QuickAccessCard";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../contexts/AuthContext";
 import "./Login.scss";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const { login } = useAuth();
+  const navigate = useNavigate();
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log({ email, password });
+    setError("");
+
+    try {
+      await login(email, password);
+      navigate("/dashboard"); 
+    } catch (err: any) {
+      setError(err.response?.data?.message || "Erro ao fazer login. Tente novamente.");
+    }
   };
 
   return (
@@ -64,6 +77,8 @@ export default function Login() {
           <span className="badge" role="status">• Acesso à Plataforma</span>
           <h3>Entre na sua conta</h3>
           <p className="subtitle">Use suas credenciais ou entre com um dos perfis de demonstração.</p>
+
+          {error && <div className="error-message">{error}</div>}
 
           <form onSubmit={handleSubmit}>
             <Input
