@@ -15,12 +15,30 @@ interface Duty {
   criador?: { nome: string };
 }
 
+interface HighlightItem {
+  id: string;
+  type: "ANCIAO" | "DIACONO";
+  title: string;
+  subtitle: string;
+  phone?: string | null;
+  footerText?: string | null;
+}
+
 export default function Dashboard() {
   const { user } = useAuth();
   const [escalas, setEscalas] = useState<Duty[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [filterCulto, setFilterCulto] = useState<string>("");
   const [searchMembro, setSearchMembro] = useState<string>("");
+
+  const [highlights, setHighlights] = useState<HighlightItem[]>([]);
+  const [editingHighlight, setEditingHighlight] = useState<"ANCIAO" | "DIACONO" | null>(null);
+  const [highlightFormData, setHighlightFormData] = useState({
+    title: "",
+    subtitle: "",
+    phone: "",
+    footerText: ""
+  });
 
   const isAdmin = user?.role === "ADMIN_LEADER";
 
@@ -45,9 +63,47 @@ export default function Dashboard() {
     }
   };
 
+  const fetchHighlights = async () => {
+    try {
+      const response = await api.get("/highlights");
+      setHighlights(response.data);
+    } catch (err) {
+      console.error("Erro ao buscar destaques:", err);
+    }
+  };
+
   useEffect(() => {
     fetchEscalas();
+    fetchHighlights();
   }, [filterCulto, searchMembro]);
+
+  const getHighlightByType = (type: "ANCIAO" | "DIACONO") => {
+    return highlights.find((h) => h.type === type);
+  };
+
+  const handleOpenHighlightModal = (type: "ANCIAO" | "DIACONO") => {
+    const existing = getHighlightByType(type);
+    setEditingHighlight(type);
+    setHighlightFormData({
+      title: existing?.title || (type === "ANCIAO" ? "Ancião Marcos Ribeiro" : "Diác. Rafael Mendes"),
+      subtitle: existing?.subtitle || (type === "ANCIAO" ? "Fevereiro de 2026" : "Semana 08"),
+      phone: existing?.phone || (type === "ANCIAO" ? "(11) 98765-4321" : "(11) 91234-5678"),
+      footerText: existing?.footerText || (type === "DIACONO" ? "Responsável nos cultos da semana" : "")
+    });
+  };
+
+  const handleSaveHighlight = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingHighlight) return;
+
+    try {
+      await api.put(`/highlights/${editingHighlight.toLowerCase()}`, highlightFormData);
+      setEditingHighlight(null);
+      fetchHighlights();
+    } catch (err) {
+      alert("Erro ao salvar destaque.");
+    }
+  };
 
   const handleCreateEscala = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -147,6 +203,9 @@ export default function Dashboard() {
     }
   ];
 
+  const anciaoData = getHighlightByType("ANCIAO");
+  const diaconoData = getHighlightByType("DIACONO");
+
   return (
     <div className="dashboard-page">
       <Header />
@@ -174,18 +233,23 @@ export default function Dashboard() {
           <HighlightCard 
             type="primary"
             badgeText="Ancião do Mês"
-            title="Ancião Marcos Ribeiro"
-            subtitle="Fevereiro de 2026"
-            phone="(11) 98765-4321"
+            title={anciaoData?.title || "Ancião Marcos Ribeiro"}
+            subtitle={anciaoData?.subtitle || "Fevereiro de 2026"}
+            phone={anciaoData?.phone || "(11) 98765-4321"}
+            footerText={anciaoData?.footerText || undefined}
+            isAdmin={isAdmin}
+            onEdit={() => handleOpenHighlightModal("ANCIAO")}
             icon={<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path></svg>}
           />
           <HighlightCard 
             type="surface"
             badgeText="Diácono da Semana"
-            title="Diác. Rafael Mendes"
-            subtitle="Semana 08"
-            phone="(11) 91234-5678"
-            footerText="Responsável nos cultos da semana"
+            title={diaconoData?.title || "Diác. Rafael Mendes"}
+            subtitle={diaconoData?.subtitle || "Semana 08"}
+            phone={diaconoData?.phone || "(11) 91234-5678"}
+            footerText={diaconoData?.footerText || "Responsável nos cultos da semana"}
+            isAdmin={isAdmin}
+            onEdit={() => handleOpenHighlightModal("DIACONO")}
             icon={<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle></svg>}
           />
         </section>
@@ -242,7 +306,72 @@ export default function Dashboard() {
         </section>
       </main>
 
-      {/* Modal de Cadastro */}
+      {/* Modal de Editar Destaque (Ancião ou Diácono) */}
+      {editingHighlight && (
+        <div className="modal-backdrop" onClick={() => setEditingHighlight(null)}>
+          <div className="modal-container" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h2>Editar {editingHighlight === "ANCIAO" ? "Ancião do Mês" : "Diácono da Semana"}</h2>
+              <button className="close-btn" onClick={() => setEditingHighlight(null)}>&times;</button>
+            </div>
+
+            <form className="modal-form" onSubmit={handleSaveHighlight}>
+              <div className="form-group">
+                <label>Nome / Título</label>
+                <input
+                  type="text"
+                  required
+                  placeholder="Ex: Ancião Marcos Ribeiro"
+                  value={highlightFormData.title}
+                  onChange={(e) => setHighlightFormData({ ...highlightFormData, title: e.target.value })}
+                  className="modal-input"
+                />
+              </div>
+
+              <div className="form-group">
+                <label>Subtítulo / Período</label>
+                <input
+                  type="text"
+                  required
+                  placeholder="Ex: Fevereiro de 2026 ou Semana 08"
+                  value={highlightFormData.subtitle}
+                  onChange={(e) => setHighlightFormData({ ...highlightFormData, subtitle: e.target.value })}
+                  className="modal-input"
+                />
+              </div>
+
+              <div className="form-group">
+                <label>Telefone / Contato</label>
+                <input
+                  type="text"
+                  placeholder="Ex: (11) 98765-4321"
+                  value={highlightFormData.phone}
+                  onChange={(e) => setHighlightFormData({ ...highlightFormData, phone: e.target.value })}
+                  className="modal-input"
+                />
+              </div>
+
+              <div className="form-group">
+                <label>Mensagem de Rodapé (Opcional)</label>
+                <input
+                  type="text"
+                  placeholder="Ex: Responsável nos cultos da semana"
+                  value={highlightFormData.footerText}
+                  onChange={(e) => setHighlightFormData({ ...highlightFormData, footerText: e.target.value })}
+                  className="modal-input"
+                />
+              </div>
+
+              <div className="form-actions">
+                <button type="button" className="btn-cancel" onClick={() => setEditingHighlight(null)}>Cancelar</button>
+                <button type="submit" className="btn-submit">Salvar Alterações</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Modal de Cadastro de Escala */}
       {isModalOpen && (
         <div className="modal-backdrop" onClick={() => setIsModalOpen(false)}>
           <div className="modal-container" onClick={(e) => e.stopPropagation()}>
