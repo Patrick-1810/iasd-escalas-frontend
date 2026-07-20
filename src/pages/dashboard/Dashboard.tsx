@@ -28,6 +28,7 @@ export default function Dashboard() {
   const { user } = useAuth();
   const [escalas, setEscalas] = useState<Duty[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingDutyId, setEditingDutyId] = useState<string | null>(null); // ID da escala sendo editada
   const [deletingDutyId, setDeletingDutyId] = useState<string | null>(null);
   const [filterCulto, setFilterCulto] = useState<string>("");
   const [searchMembro, setSearchMembro] = useState<string>("");
@@ -106,34 +107,66 @@ export default function Dashboard() {
     }
   };
 
-  const handleCreateEscala = async (e: React.FormEvent) => {
+  
+  const handleOpenCreateModal = (deptKey?: string) => {
+    setEditingDutyId(null);
+    setFormData({
+      data: "",
+      tipo_culto: "SABADO",
+      departamento: deptKey || "PREGACAO",
+      membros: "",
+      observacao: ""
+    });
+    setIsModalOpen(true);
+  };
+
+  
+  const handleOpenEditModal = (duty: any, deptKey: string) => {
+    const originalDuty = escalas.find((e) => e.id === duty.id);
+    if (!originalDuty) return;
+
+    setEditingDutyId(duty.id);
+
+
+    const formattedDate = new Date(originalDuty.data).toISOString().split("T")[0];
+
+    setFormData({
+      data: formattedDate,
+      tipo_culto: originalDuty.tipo_culto,
+      departamento: originalDuty.departamento,
+      membros: originalDuty.membros_escalados.join(", "),
+      observacao: originalDuty.observacao || ""
+    });
+
+    setIsModalOpen(true);
+  };
+
+  
+  const handleSaveEscala = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
       const dateSelected = new Date(formData.data);
       dateSelected.setMinutes(dateSelected.getMinutes() + dateSelected.getTimezoneOffset());
 
       const payload = {
-        data: dateSelected.toISOString(), 
+        data: dateSelected.toISOString(),
         tipo_culto: formData.tipo_culto,
         departamento: formData.departamento,
-        membros_escalados: formData.membros.split(",").map(m => m.trim()).filter(Boolean),
+        membros_escalados: formData.membros.split(",").map((m) => m.trim()).filter(Boolean),
         observacao: formData.observacao || undefined
       };
 
-      await api.post("/escalas", payload);
-      setIsModalOpen(false);
-      
-      setFormData({
-        data: "",
-        tipo_culto: "SABADO",
-        departamento: "PREGACAO",
-        membros: "",
-        observacao: ""
-      });
+      if (editingDutyId) {
+        await api.put(`/escalas/${editingDutyId}`, payload);
+      } else {
+        await api.post("/escalas", payload);
+      }
 
-      fetchEscalas(); 
+      setIsModalOpen(false);
+      setEditingDutyId(null);
+      fetchEscalas();
     } catch (err) {
-      alert("Erro ao criar escala. Verifique as informações.");
+      alert(`Erro ao ${editingDutyId ? "atualizar" : "criar"} escala. Verifique as informações.`);
     }
   };
 
@@ -226,7 +259,7 @@ export default function Dashboard() {
 
           {isAdmin && (
             <button 
-              onClick={() => setIsModalOpen(true)}
+              onClick={() => handleOpenCreateModal()}
               style={{ backgroundColor: "var(--brand-primary)", color: "#ffffff", border: "none", padding: "0.65rem 1.25rem", borderRadius: "8px", fontWeight: "700", fontSize: "0.875rem", display: "flex", alignItems: "center", gap: "0.5rem", cursor: "pointer" }}
             >
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
@@ -301,10 +334,8 @@ export default function Dashboard() {
                 iconBgColor={col.iconBgColor}
                 duties={departmentDuties}
                 isAdmin={isAdmin} 
-                onAddClick={() => {
-                  setFormData(prev => ({ ...prev, departamento: col.deptKey }));
-                  setIsModalOpen(true);
-                }}
+                onAddClick={() => handleOpenCreateModal(col.deptKey)}
+                onEditClick={(duty: any) => handleOpenEditModal(duty, col.deptKey)} // 👈 AQUI ESTAVA FALTANDO!
                 onDeleteClick={(duty: any) => handleDeleteEscala(duty.id)} 
               />
             );
@@ -415,16 +446,16 @@ export default function Dashboard() {
         </div>
       )}
 
-      {/* Modal de Cadastro de Escala */}
+      {/* Modal de Cadastro / Edição de Escala */}
       {isModalOpen && (
         <div className="modal-backdrop" onClick={() => setIsModalOpen(false)}>
           <div className="modal-container" onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
-              <h2>Nova Escala</h2>
+              <h2>{editingDutyId ? "Editar Escala" : "Nova Escala"}</h2>
               <button className="close-btn" onClick={() => setIsModalOpen(false)}>&times;</button>
             </div>
             
-            <form className="modal-form" onSubmit={handleCreateEscala}>
+            <form className="modal-form" onSubmit={handleSaveEscala}>
               <div className="form-row">
                 <div className="form-group">
                   <label>Data</label>
@@ -491,7 +522,9 @@ export default function Dashboard() {
 
               <div className="form-actions">
                 <button type="button" className="btn-cancel" onClick={() => setIsModalOpen(false)}>Cancelar</button>
-                <button type="submit" className="btn-submit">Criar escala</button>
+                <button type="submit" className="btn-submit">
+                  {editingDutyId ? "Salvar alterações" : "Criar escala"}
+                </button>
               </div>
             </form>
           </div>
