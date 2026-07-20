@@ -9,10 +9,18 @@
   --brand-hover: #1d4ed8;
   --border-color: #e2e8f0;
   
- 
+  --danger-bg: #fef2f2;
+  --danger-border: #fee2e2;
+  --danger-primary: #ef4444;
+  --danger-hover: #dc2626;
+  --danger-shadow: rgba(239, 68, 68, 0.25);
+  
+  --bg-secondary: #f1f5f9;
+  --text-dark: #1e293b;
+  --text-subtle: #475569;
+  
   --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
   
- 
   font-size: 16px;
   background-color: var(--bg-primary);
   color: var(--text-main);
@@ -38,14 +46,12 @@ body {
   overflow-x: hidden; 
 }
 
-
 #root {
   width: 100%;             
   min-height: 100vh; 
   display: flex;      
   flex-direction: column;
 }
-
 
 h1, h2, h3, h4, h5, h6 {
   color: var(--text-main);
@@ -71,7 +77,6 @@ a {
 button, input, select, textarea {
   font-family: var(--font-sans);
 }
-
 
 .container-center {
   width: 100%;
