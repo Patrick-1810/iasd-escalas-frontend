@@ -1,9 +1,10 @@
-import { useState } from "react";
-import { ArrowRight, Church, User, ShieldCheck } from "lucide-react";
+import { useState, useEffect } from "react";
+import { ArrowRight, User, ShieldCheck } from "lucide-react";
 import { Input } from "../../components/Input/Input";
 import { QuickAccessCard } from "../../components/QuickAccessCard/QuickAccessCard";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
+import adventistLogo from "../../assets/adventistSymbol.svg"; 
 import "./Login.scss";
 
 export default function Login() {
@@ -13,6 +14,10 @@ export default function Login() {
 
   const { login, loginAsGuest } = useAuth();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    document.title = "IASD Escalas";
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -26,7 +31,6 @@ export default function Login() {
     }
   };
 
-
   const handleMemberAccess = () => {
     loginAsGuest();
     navigate("/dashboard");
@@ -38,7 +42,11 @@ export default function Login() {
       <aside className="login-banner">
         <header className="banner-header">
           <div className="logo-box">
-            <Church size={24} className="text-white" />
+            <img 
+              src={adventistLogo} 
+              alt="Logo IASD" 
+              style={{ width: "28px", height: "28px", objectFit: "contain" }} 
+            />
           </div>
           <div>
             <h2>IASD Escalas</h2>
