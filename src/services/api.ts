@@ -1,6 +1,8 @@
 import axios from 'axios';
 
-const rawUrl = import.meta.env.VITE_API_URL || 'http://localhost:8001/api';
+const defaultUrl = 'https://iasd-escalas-api.onrender.com/api';
+
+const rawUrl = import.meta.env.VITE_API_URL || defaultUrl;
 const baseURL = rawUrl.endsWith('/api') ? rawUrl : `${rawUrl}/api`;
 
 export const api = axios.create({
