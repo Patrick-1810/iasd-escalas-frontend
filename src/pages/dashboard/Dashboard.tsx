@@ -121,7 +121,7 @@ export default function Dashboard() {
   };
 
   
-  const handleOpenEditModal = (duty: any, deptKey: string) => {
+  const handleOpenEditModal = (duty: any, _deptKey: string) => {
     const originalDuty = escalas.find((e) => e.id === duty.id);
     if (!originalDuty) return;
 

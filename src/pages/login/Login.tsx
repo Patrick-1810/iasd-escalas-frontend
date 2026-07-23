@@ -11,7 +11,7 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
-  const { login } = useAuth();
+  const { login, loginAsGuest } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -22,16 +22,20 @@ export default function Login() {
       await login(email, password);
       navigate("/dashboard"); 
     } catch (err: any) {
-      setError(err.response?.data?.message || "Erro ao fazer login. Tente novamente.");
+      setError(err.response?.data?.message || "Credenciais inválidas. Verifique seu e-mail e senha.");
     }
+  };
+
+
+  const handleMemberAccess = () => {
+    loginAsGuest();
+    navigate("/dashboard");
   };
 
   return (
     <div className="login-container">
       {/* LADO ESQUERDO: BANNER (ASIDE) */}
-      <aside 
-        className="login-banner" 
-      >
+      <aside className="login-banner">
         <header className="banner-header">
           <div className="logo-box">
             <Church size={24} className="text-white" />
@@ -46,7 +50,7 @@ export default function Login() {
           <h1>Servir com ordem,<br />adorar com amor.</h1>
           <p>
             Plataforma de gestão de escalas para líderes, anciãos e membros da
-            Igreja Adventistado Sétimo Dia. Organize os cultos, acompanhe os
+            Igreja Adventista do Sétimo Dia. Organize os cultos, acompanhe os
             departamentos e edifique a comunidade.
           </p>
 
@@ -76,14 +80,14 @@ export default function Login() {
         <div className="form-wrapper">
           <span className="badge" role="status">• Acesso à Plataforma</span>
           <h3>Entre na sua conta</h3>
-          <p className="subtitle">Use suas credenciais ou entre com um dos perfis de demonstração.</p>
+          <p className="subtitle">Membros possuem acesso livre. Líderes entram com e-mail e senha.</p>
 
           {error && <div className="error-message">{error}</div>}
 
           <form onSubmit={handleSubmit}>
             <Input
               id="email"
-              label="E-mail"
+              label="E-mail do Líder"
               type="email"
               placeholder="seu@email.com"
               value={email}
@@ -102,7 +106,7 @@ export default function Login() {
             />
 
             <button type="submit" className="btn-submit">
-              Entrar <ArrowRight size={18} />
+              Entrar como Líder <ArrowRight size={18} />
             </button>
           </form>
 
@@ -110,24 +114,26 @@ export default function Login() {
             <span>OU ACESSO RÁPIDO</span>
           </div>
 
-          <section className="quick-access" aria-label="Acesso rápido demonstrativo">
+          <section className="quick-access" aria-label="Acesso rápido por perfil">
             <QuickAccessCard
               variant="member"
-              title="Membro"
+              title="Acesso Membro"
               icon={<User size={18} />}
-              onClick={() => console.log("Acesso rápido: Membro")}
+              onClick={handleMemberAccess}
             />
 
             <QuickAccessCard
               variant="leader"
-              title="Líder"
+              title="Área do Líder"
               icon={<ShieldCheck size={18} />}
-              onClick={() => console.log("Acesso rápido: Líder")}
+              onClick={() => {
+                document.getElementById("email")?.focus();
+              }}
             />
           </section>
 
           <footer className="terms">
-            <p>Ao entrar você concorda com os termos de uso e privacidade.</p>
+            <p>Apenas líderes autorizados possuem credenciais de alteração.</p>
           </footer>
         </div>
       </main>

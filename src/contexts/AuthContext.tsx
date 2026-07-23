@@ -14,9 +14,9 @@ api.interceptors.request.use((config) => {
 });
 
 interface User {
-  id: string;
+  id?: string;
   nome: string;
-  email: string;
+  email?: string;
   role: "VIEW_ONLY" | "ADMIN_LEADER";
 }
 
@@ -25,6 +25,7 @@ interface AuthContextType {
   token: string | null;
   signed: boolean;
   login: (email: string, password: string) => Promise<void>;
+  loginAsGuest: () => void;
   logout: () => void;
   loading: boolean;
 }
@@ -40,9 +41,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const storedToken = localStorage.getItem("@IASDEscalas:token");
     const storedUser = localStorage.getItem("@IASDEscalas:user");
 
-    if (storedToken && storedUser) {
-      setToken(storedToken);
+    if (storedUser) {
       setUser(JSON.parse(storedUser));
+      if (storedToken) {
+        setToken(storedToken);
+      }
     }
     setLoading(false);
   }, []);
@@ -59,6 +62,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(receivedUser);
   };
 
+  const loginAsGuest = () => {
+    const guestUser: User = {
+      nome: "Membro / Visitante",
+      role: "VIEW_ONLY"
+    };
+
+    localStorage.removeItem("@IASDEscalas:token");
+    localStorage.setItem("@IASDEscalas:user", JSON.stringify(guestUser));
+
+    setToken(null);
+    setUser(guestUser);
+  };
+
   const logout = () => {
     localStorage.removeItem("@IASDEscalas:token");
     localStorage.removeItem("@IASDEscalas:user");
@@ -67,7 +83,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{ signed: !!user, user, token, login, logout, loading }}>
+    <AuthContext.Provider value={{ signed: !!user, user, token, login, loginAsGuest, logout, loading }}>
       {children}
     </AuthContext.Provider>
   );
