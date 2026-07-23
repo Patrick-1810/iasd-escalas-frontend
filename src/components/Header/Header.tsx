@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useAuth } from "../../contexts/AuthContext";
+import adventistLogo from "../../assets/adventistSymbol.svg"; 
 import "./Header.scss";
 
 export const Header: React.FC = () => {
@@ -13,7 +14,11 @@ export const Header: React.FC = () => {
       <div className="container-center header-wrapper">
         <div className="brand-area">
           <div className="logo-box">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+            <img 
+              src={adventistLogo} 
+              alt="Logo IASD" 
+              style={{ width: "27px", height: "27px", objectFit: "contain" }} 
+            />
           </div>
           <div className="brand-text">
             <h2>IASD Escalas</h2>
@@ -29,7 +34,7 @@ export const Header: React.FC = () => {
         </nav>
 
         <div className="user-profile">
-          {/* Badge*/}
+          {/* Badge */}
           <span className={`role-badge ${isAdmin ? "admin-mode" : ""}`} style={{ backgroundColor: isAdmin ? "#2563eb" : "#f1f5f9", color: isAdmin ? "#ffffff" : "var(--text-muted)" }}>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
             {isAdmin ? "ADMIN/LÍDER" : "MEMBRO"}
