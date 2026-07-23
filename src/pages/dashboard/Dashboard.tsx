@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
-import { useAuth, api } from "../../contexts/AuthContext";
+import { useAuth } from "../../contexts/AuthContext";
+import { api } from "../../services/api";
 import { Header } from "../../components/Header/Header";
 import { HighlightCard } from "../../components/HighlightCard/HighlightCard";
 import { ScheduleColumn } from "../../components/ScheduleColumn/ScheduleColumn";
