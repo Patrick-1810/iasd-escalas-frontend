@@ -3,6 +3,8 @@ import Login from "./pages/login/Login";
 import Dashboard from "./pages/dashboard/Dashboard";
 import { AuthProvider } from "./contexts/AuthContext";
 
+console.log("IASD Escalas - Build Atualizado:", Date.now());
+
 function App() {
   return (
    <AuthProvider>
@@ -18,4 +20,3 @@ function App() {
 }
 
 export default App;
-
