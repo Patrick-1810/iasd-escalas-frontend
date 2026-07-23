@@ -25,26 +25,15 @@ export const HighlightCard: React.FC<HighlightCardProps> = ({
   onEdit
 }) => {
   return (
-    <div className={`highlight-card ${type}`} style={{ position: "relative" }}>
+    <div className={`highlight-card ${type}`}>
       <div className="card-top">
         <span className="card-badge">{badgeText}</span>
-        <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+        <div className="card-actions">
           {isAdmin && onEdit && (
             <button
               onClick={onEdit}
               title="Editar destaque"
-              style={{
-                background: "rgba(255, 255, 255, 0.15)",
-                border: "none",
-                borderRadius: "6px",
-                padding: "6px",
-                cursor: "pointer",
-                color: "inherit",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                transition: "background 0.2s"
-              }}
+              className="edit-btn"
             >
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                 <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
@@ -62,7 +51,9 @@ export const HighlightCard: React.FC<HighlightCardProps> = ({
         
         {phone && (
           <div className="phone-line">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+            </svg>
             <span>{phone}</span>
           </div>
         )}
