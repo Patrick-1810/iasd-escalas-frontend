@@ -253,7 +253,7 @@ export default function Dashboard() {
         <section className="welcome-section" style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", flexWrap: "wrap", gap: "1rem" }}>
           <div>
             <span className="section-badge">Escalas da Semana</span>
-            <h1>Olá, <span className="highlight-name">{user?.nome || "Membro"}</span>.</h1>
+           <h1>Olá, <span className="highlight-name">{isAdmin ? "Líder" : "Membro"}</span>.</h1>
             <p>{isAdmin ? "Gerencie os departamentos, crie novas escalas e mantenha a ordem nos cultos." : "Confira as escalas dos próximos cultos e encontre onde você foi escalado."}</p>
           </div>
 
