@@ -1,9 +1,14 @@
 import axios from 'axios';
 
-const defaultUrl = 'https://iasd-escalas-api.onrender.com/api';
+const RENDER_BASE_URL = 'https://iasd-escalas-api.onrender.com';
 
-const rawUrl = import.meta.env.VITE_API_URL || defaultUrl;
-const baseURL = rawUrl.endsWith('/api') ? rawUrl : `${rawUrl}/api`;
+const envUrl = import.meta.env.VITE_API_URL;
+const isLocalhost = !envUrl || envUrl.includes('localhost');
+
+const baseUrlTarget = isLocalhost ? RENDER_BASE_URL : envUrl;
+const baseURL = baseUrlTarget.endsWith('/api') 
+  ? baseUrlTarget 
+  : `${baseUrlTarget.replace(/\/$/, '')}/api`;
 
 export const api = axios.create({
   baseURL,
